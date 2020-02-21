@@ -7,11 +7,13 @@ Project
 *Project proposal is due on Tuesday the 27th of Feb, do your part so we can submit it on time  
 # TO DO  
 
-Johane' - upload word document  
-Chris - upload powerpoint & add points from word document  
+Johane' - upload word document   
 Jean - moderate word & powerpoint  
-Jaymes & Reinhardt - any suggestions, insights, etc will be much appreciated  
+James & Reinhardt - any suggestions, insights, etc will be much appreciated  
 
 # Done  
 Project idea established  
+Chris - upload powerpoint & add points from word document  
+
+HI
 
