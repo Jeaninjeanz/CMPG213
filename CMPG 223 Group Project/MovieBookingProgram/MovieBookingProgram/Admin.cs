@@ -29,7 +29,7 @@ namespace MovieBookingProgram
         private void Admin_Load(object sender, EventArgs e)
         {
             
-            //TclAdmin.Enabled = false;
+            TclAdmin.Enabled = false;
             BtnHome.Visible = false;
             btnDone.Visible = false;
 
@@ -56,13 +56,6 @@ namespace MovieBookingProgram
             BtnClients.Visible = false;
 
             PopGridView("Clients");
-
-            string Name = DGVClients.CurrentRow.Cells[1].Value.ToString();
-            string Surname = DGVClients.CurrentRow.Cells[2].Value.ToString();
-
-            txtFirstName.Text = Name;
-            TxtLastname.Text = Surname;
-          
         }
 
         private void BtnMovies_Click(object sender, EventArgs e)
@@ -142,16 +135,6 @@ namespace MovieBookingProgram
             BtnAdd.Visible = false;
             btnEdit.Visible = false;
             btnDone.Visible = true;
-
-            txtFirstName.Enabled = true;
-            TxtLastname.Enabled = true;
-            btnDone.Visible = true;
-            BtnAdd.Visible = false;
-            btnEdit.Visible = false;
-            DGVClients.Enabled = false;
-
-            txtFirstName.Text = "";
-            TxtLastname.Text = "";
         }
         private void PopGridView(string table)
         {
@@ -168,8 +151,8 @@ namespace MovieBookingProgram
             adap.SelectCommand = cmd;
             adap.Fill(ds, "Data");
 
-            DGVClients.DataSource = ds;
-            DGVClients.DataMember = "Data";
+            dataGridView1.DataSource = ds;
+            dataGridView1.DataMember = "Data";
 
             conn.Close();
         }
