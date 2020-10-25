@@ -21,7 +21,7 @@ namespace MovieBookingProgram
         public SqlDataAdapter adap;
 
         public bool Edit=false,Delete=false;
-        public int ClientId,MovieId,ShowId,UserId;
+        public int ClientId,MovieId,ShowId,UserId,BookId;
 
         public Admin()
         {
@@ -31,6 +31,8 @@ namespace MovieBookingProgram
 
         private void Admin_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'dBTheaterDataSet3.Clients' table. You can move, or remove it, as needed.
+            this.clientsTableAdapter.Fill(this.dBTheaterDataSet3.Clients);
             // TODO: This line of code loads data into the 'dBTheaterDataSet2.Cinemas' table. You can move, or remove it, as needed.
             this.cinemasTableAdapter.Fill(this.dBTheaterDataSet2.Cinemas);
             // TODO: This line of code loads data into the 'dBTheaterDataSet1.Movies' table. You can move, or remove it, as needed.
@@ -133,6 +135,10 @@ namespace MovieBookingProgram
             BtnBookings.Visible = false;
 
             PopGridView("Bookings");
+            DGVBookings.DataSource = ds;
+            DGVBookings.DataMember = "Data";
+
+            EnableBookings(true);
         }
 
         private void BtnReports_Click(object sender, EventArgs e)
@@ -654,6 +660,205 @@ namespace MovieBookingProgram
 
         }
 
+        private void DGVBookings_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                BookId = Convert.ToInt16(DGVBookings.CurrentRow.Cells[0].Value.ToString());
+                int Name = Convert.ToInt16(DGVBookings.CurrentRow.Cells[1].Value.ToString());      // Chris: Change selection Users
+                int Movie = Convert.ToInt16(DGVBookings.CurrentRow.Cells[4].Value.ToString());
+                string Seat = (DGVBookings.CurrentRow.Cells[5].Value.ToString());
+
+                cbxMovView.SelectedIndex = Movie;
+                cbxName.SelectedIndex = Name;
+                txtSeats.Text = Seat;
+
+            }
+            catch
+            {
+                MessageBox.Show("Error: Pleaes try again");
+            }
+        }
+
+        private void BtnEditBooking_Click(object sender, EventArgs e)
+        {
+            EnableBookings(false);
+        }
+
+        private void BtnDeleteBooking_Click(object sender, EventArgs e)
+        {
+            
+
+            MessageBox.Show("Booking Deleted Deleted");
+
+            try
+            {
+                if (MessageBox.Show("Are you sure you want to delete the selected row?", "Warning!", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                {
+                    string delete_query = "DELETE FROM Bookings WHERE Booking_Id='" + BookId + "'";
+                    conn = new SqlConnection(constr);
+                    conn.Open();
+                    cmd = new SqlCommand(delete_query, conn);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error: Please try again");
+
+            }
+            PopGridView("Bookings");
+            DGVBookings.DataSource = ds;
+            DGVBookings.DataMember = "Data";
+        }
+
+        private void BtnDoneBookings_Click(object sender, EventArgs e)
+        {
+            EnableBookings(true);
+
+            try                     //Chris: Edit Booking
+            {
+                string sqlInsert = "UPDATE Bookings SET Seat_Code=@Seats Where Booking_Id=@Booking_Id";
+
+                conn.Open();
+                cmd = new SqlCommand(sqlInsert, conn);
+                cmd.Parameters.AddWithValue("@Booking_Id", BookId);
+                cmd.Parameters.AddWithValue("@Seats", txtSeats.Text);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+
+                MessageBox.Show("Edit Sucessfull");
+                Edit = false;
+            }
+            catch
+            {
+                MessageBox.Show("Error: Please try agian");
+
+            }
+            PopGridView("Bookings");
+            DGVBookings.DataSource = ds;
+            DGVBookings.DataMember = "Data";
+
+            EnableBookings(true);
+
+        }
+
+        private void BtnFilterBooking_Click(object sender, EventArgs e)
+        {
+            conn = new SqlConnection(constr);       //Chris: Populate all data grid view
+            conn.Open();
+            string sql;
+            adap = new SqlDataAdapter();
+            ds = new DataSet();
+
+            sql = @"SELECT * FROM Bookings WHERE Booking_Id='"+txtFilter.Text+"'";
+            cmd = new SqlCommand(sql, conn);
+
+
+            adap.SelectCommand = cmd;
+            adap.Fill(ds, "Data");
+
+            DGVBookings.DataSource = ds;
+            DGVBookings.DataMember = "Data";
+
+            conn.Close();
+        }
+
+        private void TclAdmin_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int Index = TclAdmin.SelectedIndex;
+            switch (Index)
+            {
+                case 0:
+                    BtnHome.PerformClick();
+                    break;
+                case 1:
+                    BtnClients.PerformClick();
+                    break;
+                case 2:
+                    BtnMovies.PerformClick();
+                    break;
+                case 3:
+                    BtnGenres.PerformClick();
+                    break;
+                case 4:
+                    BtnScedule.PerformClick();
+                    break;
+                case 5:
+                    BtnBookings.PerformClick();
+                    break;
+                case 6:
+                    BtnUser.PerformClick();
+                    break;
+                case 7:
+                    btnReports.PerformClick();
+                    break;
+            }
+        }
+
+        private void btnView_Click(object sender, EventArgs e)
+        {
+            int Movie;
+
+            Movie = cbxMovieViews.SelectedIndex;
+
+            lbxReport.Items.Clear();
+
+            conn = new SqlConnection(constr);
+            conn.Open();
+
+            String sql_Total = "SELECT count(Booking_Id) FROM Bookings";
+            cmd = new SqlCommand(sql_Total, conn);
+            int Total = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+
+            String sql_Seats = "SELECT Sum(Seat_Code) FROM Bookings";
+            cmd = new SqlCommand(sql_Seats, conn);
+            int totSeats = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+
+            String sql_Movie = "SELECT count(Booking_Id) FROM Bookings WHERE Movie_id='"+Movie+"'";
+            cmd = new SqlCommand(sql_Movie, conn);
+            int TotMovie = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+
+            conn.Close();
+
+            lbxReport.Items.Add("Total Bookings: " + Total.ToString());            
+            lbxReport.Items.Add("Total Seats Booked: " + totSeats.ToString());
+            lbxReport.Items.Add("Total Bookings for " + cbxMovieViews.Text + ": " + TotMovie.ToString());
+            lbxReport.Items.Add("");
+            lbxReport.Items.Add("Last 30 Days");
+
+            conn.Open();
+
+            DateTime StartDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day);
+            StartDate = StartDate.AddDays(-30);
+
+            sql_Total = "SELECT count(Booking_Id) FROM Bookings WHERE Booking_For>'"+StartDate+"'";
+            cmd = new SqlCommand(sql_Total, conn);
+            Total = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+
+            sql_Seats = "SELECT Sum(Seat_Code) FROM Bookings WHERE Booking_For>'" + StartDate + "'";
+            cmd = new SqlCommand(sql_Seats, conn);
+            totSeats = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+
+            sql_Movie = "SELECT count(Booking_Id) FROM Bookings WHERE Movie_id='" + Movie + "' AND Booking_For>'" + StartDate + "'";
+            cmd = new SqlCommand(sql_Movie, conn);
+            TotMovie = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+
+            conn.Close();
+
+            lbxReport.Items.Add("Total Bookings: " + Total.ToString());
+            lbxReport.Items.Add("Total Seats Booked: " + totSeats.ToString());
+            lbxReport.Items.Add("Total Bookings for " + cbxMovieViews.Text + ": " + TotMovie.ToString());
+
+
+        }
+
+        private void lblMovieViews_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void BtnUserDone_Click(object sender, EventArgs e)
         {
             EnabledUser(true);
@@ -823,7 +1028,7 @@ namespace MovieBookingProgram
         {
             if (true)
             {
-                if (Done == false)                //Chris: Enable/diable components Schedule
+                if (Done == false)                //Chris: Enable/disable components Schedule
                 {
                     txtUsername.Enabled = true;
                     txtPassword.Enabled = true;
@@ -846,6 +1051,40 @@ namespace MovieBookingProgram
                     BtnUserDone.Visible = false;
 
                     DGVUsers.Enabled = true;
+                }
+            }
+        }
+        private void EnableBookings(bool Done)
+        {
+            if (true)
+            {
+                if (Done == false)                //Chris: Enable/disable components bookings
+                {
+                    //cbxName.Enabled = true;
+                    //CBXSurname.Enabled = true;
+                    //cbxMovView.Enabled = true;
+                    txtSeats.Enabled = true;
+
+                    
+                    BtnDoneBookings.Visible = true;
+                    BtnDeleteBooking.Visible = false;
+                    BtnEditBooking.Visible = false;
+
+                    DGVBookings.Enabled = false;
+                }
+                else
+                {
+                    //cbxName.Enabled = false;
+                    //CBXSurname.Enabled = false;
+                    //cbxMovView.Enabled = false;
+                    txtSeats.Enabled = false;
+
+
+                    BtnDoneBookings.Visible = false;
+                    BtnDeleteBooking.Visible = true;
+                    BtnEditBooking.Visible = true;
+
+                    DGVBookings.Enabled = true;
                 }
             }
         }

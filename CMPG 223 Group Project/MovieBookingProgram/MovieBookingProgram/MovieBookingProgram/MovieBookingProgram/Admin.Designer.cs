@@ -94,7 +94,6 @@
             this.BtnDeleteBooking = new System.Windows.Forms.Button();
             this.BtnEditBooking = new System.Windows.Forms.Button();
             this.LblSelectMovie = new System.Windows.Forms.Label();
-            this.CbxSelectMovie = new System.Windows.Forms.ComboBox();
             this.DGVBookings = new System.Windows.Forms.DataGridView();
             this.lblManageBooking = new System.Windows.Forms.Label();
             this.TbUser = new System.Windows.Forms.TabPage();
@@ -121,6 +120,23 @@
             this.moviesTableAdapter = new MovieBookingProgram.DBTheaterDataSet1TableAdapters.MoviesTableAdapter();
             this.btnReports = new System.Windows.Forms.Button();
             this.cinemasTableAdapter = new MovieBookingProgram.DBTheaterDataSet2TableAdapters.CinemasTableAdapter();
+            this.txtFilter = new System.Windows.Forms.TextBox();
+            this.cbxName = new System.Windows.Forms.ComboBox();
+            this.cbxMovView = new System.Windows.Forms.ComboBox();
+            this.txtSeats = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.dBTheaterDataSet3 = new MovieBookingProgram.DBTheaterDataSet3();
+            this.clientsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.clientsTableAdapter = new MovieBookingProgram.DBTheaterDataSet3TableAdapters.ClientsTableAdapter();
+            this.label18 = new System.Windows.Forms.Label();
+            this.CBXSurname = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.cbxMovieViews = new System.Windows.Forms.ComboBox();
+            this.lblMovieViews = new System.Windows.Forms.Label();
+            this.lbxReport = new System.Windows.Forms.ListBox();
+            this.btnView = new System.Windows.Forms.Button();
             this.TclAdmin.SuspendLayout();
             this.TbHome.SuspendLayout();
             this.TbClients.SuspendLayout();
@@ -141,6 +157,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.DGVBookings)).BeginInit();
             this.TbUser.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGVUsers)).BeginInit();
+            this.TBReports.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBTheaterDataSet3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clientsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // TclAdmin
@@ -158,6 +177,7 @@
             this.TclAdmin.SelectedIndex = 0;
             this.TclAdmin.Size = new System.Drawing.Size(716, 518);
             this.TclAdmin.TabIndex = 0;
+            this.TclAdmin.SelectedIndexChanged += new System.EventHandler(this.TclAdmin_SelectedIndexChanged);
             // 
             // TbHome
             // 
@@ -711,12 +731,20 @@
             // 
             // TbBookings
             // 
+            this.TbBookings.Controls.Add(this.CBXSurname);
+            this.TbBookings.Controls.Add(this.label18);
+            this.TbBookings.Controls.Add(this.label17);
+            this.TbBookings.Controls.Add(this.label16);
+            this.TbBookings.Controls.Add(this.label15);
+            this.TbBookings.Controls.Add(this.txtSeats);
+            this.TbBookings.Controls.Add(this.cbxMovView);
+            this.TbBookings.Controls.Add(this.cbxName);
+            this.TbBookings.Controls.Add(this.txtFilter);
             this.TbBookings.Controls.Add(this.BtnFilterBooking);
             this.TbBookings.Controls.Add(this.BtnDoneBookings);
             this.TbBookings.Controls.Add(this.BtnDeleteBooking);
             this.TbBookings.Controls.Add(this.BtnEditBooking);
             this.TbBookings.Controls.Add(this.LblSelectMovie);
-            this.TbBookings.Controls.Add(this.CbxSelectMovie);
             this.TbBookings.Controls.Add(this.DGVBookings);
             this.TbBookings.Controls.Add(this.lblManageBooking);
             this.TbBookings.Location = new System.Drawing.Point(4, 25);
@@ -735,6 +763,7 @@
             this.BtnFilterBooking.TabIndex = 7;
             this.BtnFilterBooking.Text = "Filter Bookings";
             this.BtnFilterBooking.UseVisualStyleBackColor = true;
+            this.BtnFilterBooking.Click += new System.EventHandler(this.BtnFilterBooking_Click);
             // 
             // BtnDoneBookings
             // 
@@ -744,6 +773,7 @@
             this.BtnDoneBookings.TabIndex = 6;
             this.BtnDoneBookings.Text = "Done";
             this.BtnDoneBookings.UseVisualStyleBackColor = true;
+            this.BtnDoneBookings.Click += new System.EventHandler(this.BtnDoneBookings_Click);
             // 
             // BtnDeleteBooking
             // 
@@ -753,6 +783,7 @@
             this.BtnDeleteBooking.TabIndex = 5;
             this.BtnDeleteBooking.Text = "Delete Booking";
             this.BtnDeleteBooking.UseVisualStyleBackColor = true;
+            this.BtnDeleteBooking.Click += new System.EventHandler(this.BtnDeleteBooking_Click);
             // 
             // BtnEditBooking
             // 
@@ -762,23 +793,16 @@
             this.BtnEditBooking.TabIndex = 4;
             this.BtnEditBooking.Text = "Edit Booking";
             this.BtnEditBooking.UseVisualStyleBackColor = true;
+            this.BtnEditBooking.Click += new System.EventHandler(this.BtnEditBooking_Click);
             // 
             // LblSelectMovie
             // 
-            this.LblSelectMovie.AutoSize = true;
-            this.LblSelectMovie.Location = new System.Drawing.Point(57, 61);
+            this.LblSelectMovie.Location = new System.Drawing.Point(20, 46);
             this.LblSelectMovie.Name = "LblSelectMovie";
-            this.LblSelectMovie.Size = new System.Drawing.Size(100, 17);
+            this.LblSelectMovie.Size = new System.Drawing.Size(156, 46);
             this.LblSelectMovie.TabIndex = 3;
-            this.LblSelectMovie.Text = "Filter By movie";
-            // 
-            // CbxSelectMovie
-            // 
-            this.CbxSelectMovie.FormattingEnabled = true;
-            this.CbxSelectMovie.Location = new System.Drawing.Point(202, 58);
-            this.CbxSelectMovie.Name = "CbxSelectMovie";
-            this.CbxSelectMovie.Size = new System.Drawing.Size(121, 24);
-            this.CbxSelectMovie.TabIndex = 2;
+            this.LblSelectMovie.Text = "Please enter a booking ID to filter bookings";
+            this.LblSelectMovie.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // DGVBookings
             // 
@@ -788,6 +812,7 @@
             this.DGVBookings.RowTemplate.Height = 24;
             this.DGVBookings.Size = new System.Drawing.Size(637, 191);
             this.DGVBookings.TabIndex = 1;
+            this.DGVBookings.SelectionChanged += new System.EventHandler(this.DGVBookings_SelectionChanged);
             // 
             // lblManageBooking
             // 
@@ -911,6 +936,11 @@
             // 
             // TBReports
             // 
+            this.TBReports.Controls.Add(this.btnView);
+            this.TBReports.Controls.Add(this.lbxReport);
+            this.TBReports.Controls.Add(this.lblMovieViews);
+            this.TBReports.Controls.Add(this.cbxMovieViews);
+            this.TBReports.Controls.Add(this.label19);
             this.TBReports.Location = new System.Drawing.Point(4, 25);
             this.TBReports.Name = "TBReports";
             this.TBReports.Padding = new System.Windows.Forms.Padding(3);
@@ -1021,6 +1051,148 @@
             // 
             this.cinemasTableAdapter.ClearBeforeFill = true;
             // 
+            // txtFilter
+            // 
+            this.txtFilter.Location = new System.Drawing.Point(182, 58);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(153, 22);
+            this.txtFilter.TabIndex = 8;
+            // 
+            // cbxName
+            // 
+            this.cbxName.DataSource = this.clientsBindingSource;
+            this.cbxName.DisplayMember = "First_name";
+            this.cbxName.FormattingEnabled = true;
+            this.cbxName.Location = new System.Drawing.Point(130, 313);
+            this.cbxName.Name = "cbxName";
+            this.cbxName.Size = new System.Drawing.Size(121, 24);
+            this.cbxName.TabIndex = 9;
+            // 
+            // cbxMovView
+            // 
+            this.cbxMovView.DataSource = this.moviesBindingSource;
+            this.cbxMovView.DisplayMember = "Movie_Name";
+            this.cbxMovView.FormattingEnabled = true;
+            this.cbxMovView.Location = new System.Drawing.Point(130, 370);
+            this.cbxMovView.Name = "cbxMovView";
+            this.cbxMovView.Size = new System.Drawing.Size(121, 24);
+            this.cbxMovView.TabIndex = 10;
+            // 
+            // txtSeats
+            // 
+            this.txtSeats.Location = new System.Drawing.Point(130, 400);
+            this.txtSeats.Name = "txtSeats";
+            this.txtSeats.Size = new System.Drawing.Size(121, 22);
+            this.txtSeats.TabIndex = 11;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(10, 316);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(84, 17);
+            this.label15.TabIndex = 12;
+            this.label15.Text = "Client Name";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(10, 369);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(45, 17);
+            this.label16.TabIndex = 13;
+            this.label16.Text = "Movie";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(10, 403);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(114, 17);
+            this.label17.TabIndex = 14;
+            this.label17.Text = "Number of Seats";
+            // 
+            // dBTheaterDataSet3
+            // 
+            this.dBTheaterDataSet3.DataSetName = "DBTheaterDataSet3";
+            this.dBTheaterDataSet3.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // clientsBindingSource
+            // 
+            this.clientsBindingSource.DataMember = "Clients";
+            this.clientsBindingSource.DataSource = this.dBTheaterDataSet3;
+            // 
+            // clientsTableAdapter
+            // 
+            this.clientsTableAdapter.ClearBeforeFill = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(10, 343);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(104, 17);
+            this.label18.TabIndex = 15;
+            this.label18.Text = "Client Surname";
+            // 
+            // CBXSurname
+            // 
+            this.CBXSurname.DataSource = this.clientsBindingSource;
+            this.CBXSurname.DisplayMember = "Last_Name";
+            this.CBXSurname.FormattingEnabled = true;
+            this.CBXSurname.Location = new System.Drawing.Point(130, 343);
+            this.CBXSurname.Name = "CBXSurname";
+            this.CBXSurname.Size = new System.Drawing.Size(121, 24);
+            this.CBXSurname.TabIndex = 16;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(338, 11);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(58, 17);
+            this.label19.TabIndex = 0;
+            this.label19.Text = "Reports";
+            // 
+            // cbxMovieViews
+            // 
+            this.cbxMovieViews.DataSource = this.moviesBindingSource;
+            this.cbxMovieViews.DisplayMember = "Movie_Name";
+            this.cbxMovieViews.FormattingEnabled = true;
+            this.cbxMovieViews.Location = new System.Drawing.Point(216, 53);
+            this.cbxMovieViews.Name = "cbxMovieViews";
+            this.cbxMovieViews.Size = new System.Drawing.Size(121, 24);
+            this.cbxMovieViews.TabIndex = 4;
+            // 
+            // lblMovieViews
+            // 
+            this.lblMovieViews.AutoSize = true;
+            this.lblMovieViews.Location = new System.Drawing.Point(22, 56);
+            this.lblMovieViews.Name = "lblMovieViews";
+            this.lblMovieViews.Size = new System.Drawing.Size(145, 17);
+            this.lblMovieViews.TabIndex = 5;
+            this.lblMovieViews.Text = "Please select a movie";
+            this.lblMovieViews.Click += new System.EventHandler(this.lblMovieViews_Click);
+            // 
+            // lbxReport
+            // 
+            this.lbxReport.FormattingEnabled = true;
+            this.lbxReport.ItemHeight = 16;
+            this.lbxReport.Location = new System.Drawing.Point(39, 147);
+            this.lbxReport.Name = "lbxReport";
+            this.lbxReport.Size = new System.Drawing.Size(569, 260);
+            this.lbxReport.TabIndex = 6;
+            // 
+            // btnView
+            // 
+            this.btnView.Location = new System.Drawing.Point(150, 105);
+            this.btnView.Name = "btnView";
+            this.btnView.Size = new System.Drawing.Size(116, 24);
+            this.btnView.TabIndex = 7;
+            this.btnView.Text = "View Report";
+            this.btnView.UseVisualStyleBackColor = true;
+            this.btnView.Click += new System.EventHandler(this.btnView_Click);
+            // 
             // Admin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1066,6 +1238,10 @@
             this.TbUser.ResumeLayout(false);
             this.TbUser.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGVUsers)).EndInit();
+            this.TBReports.ResumeLayout(false);
+            this.TBReports.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dBTheaterDataSet3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clientsBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1133,7 +1309,6 @@
         private System.Windows.Forms.Button BtnDeleteBooking;
         private System.Windows.Forms.Button BtnEditBooking;
         private System.Windows.Forms.Label LblSelectMovie;
-        private System.Windows.Forms.ComboBox CbxSelectMovie;
         private System.Windows.Forms.DataGridView DGVBookings;
         private System.Windows.Forms.Label lblManageBooking;
         private System.Windows.Forms.Label LblReports;
@@ -1164,5 +1339,22 @@
         private System.Windows.Forms.DataGridView DGVSchedule;
         private System.Windows.Forms.Button btnDoneSchedule;
         private System.Windows.Forms.Button BtnFilterBooking;
+        private System.Windows.Forms.TextBox txtFilter;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox txtSeats;
+        private System.Windows.Forms.ComboBox cbxMovView;
+        private System.Windows.Forms.ComboBox cbxName;
+        private DBTheaterDataSet3 dBTheaterDataSet3;
+        private System.Windows.Forms.BindingSource clientsBindingSource;
+        private DBTheaterDataSet3TableAdapters.ClientsTableAdapter clientsTableAdapter;
+        private System.Windows.Forms.ComboBox CBXSurname;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button btnView;
+        private System.Windows.Forms.ListBox lbxReport;
+        private System.Windows.Forms.Label lblMovieViews;
+        private System.Windows.Forms.ComboBox cbxMovieViews;
+        private System.Windows.Forms.Label label19;
     }
 }
