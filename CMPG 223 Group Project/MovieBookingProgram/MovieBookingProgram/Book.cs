@@ -145,6 +145,8 @@ namespace MovieBookingProgram
 
         private void cbxMovie_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+            ConnectDatabase();
             //load movie description from database
             GrabDataRtbx(@"SELECT Description FROM Movies WHERE Movie_Name = " + cbxMovie.SelectedItem, rtbxMovie); //NB: no such column yet
             //load restriction
@@ -153,6 +155,7 @@ namespace MovieBookingProgram
             cbxGenre.SelectedIndex = 0;
             //allow booking
             btnBook.Enabled = true;
+            conn.Close();
         }
 
         private void cbxGenre_SelectedIndexChanged(object sender, EventArgs e)
@@ -164,15 +167,16 @@ namespace MovieBookingProgram
         private void cbxSpecial_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-
+            ConnectDatabase();
             GrabDataCbx(@"SELECT Movie_Name FROM Movies WHERE  Genre_Id= " + cbxSpecial.SelectedItem, cbxMovie);
             GrabDataRtbx(@"SELECT Description FROM Specials", rtbxSpecial);
             GrabDataLbl(@"SELECT Price FROM Specials WHERE Special_Id = " + cbxSpecial.SelectedItem, lblSpecialPrice);
-
+            conn.Close();
         }
 
         private void btnBook_Click(object sender, EventArgs e)
-        { 
+        {
+            ConnectDatabase();
             DialogResult result = MessageBox.Show("Do you want to check out?", "Confirmation", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
