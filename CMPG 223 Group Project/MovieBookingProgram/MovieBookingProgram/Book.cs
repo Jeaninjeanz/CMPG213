@@ -16,7 +16,7 @@ namespace MovieBookingProgram
     {
         //different file path
         public string constr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\Uni\CMPG223\Project\CMPG Assignment\2020_10_17_Basic_Layout\CMPG 223 Group Project\MovieBookingProgram\MovieBookingProgram\DBTheater.mdf;Integrated Security=True";
-
+        public int user;
         public SqlConnection conn;
         public SqlCommand cmd;
         public DataSet ds;
@@ -38,12 +38,17 @@ namespace MovieBookingProgram
             GrabDataCbx(@"SELECT Movie_Name FROM Movies", cbxMovie);
             GrabDataCbx(@"SELECT Description FROM Genres", cbxGenre);
             conn.Close();
+            rtbxOut.Clear();
 
             //User guidance
             btnBook.Enabled = false;
             gbxDateTime.Enabled = true;
             gbxMovie.Enabled = true;
             gbxTicket.Enabled = false;
+
+            txtFirstName.Enabled = true;
+            txtLastName.Enabled = true;
+            btnCheck.Enabled = true;
         }
 
         private void GrabDataCbx(string sql, ComboBox cbx)
@@ -94,6 +99,7 @@ namespace MovieBookingProgram
             conn.Close();
         }
 
+
         public Book()
         {
             InitializeComponent();
@@ -132,12 +138,15 @@ namespace MovieBookingProgram
         private void Book_Load(object sender, EventArgs e)
         {
             MessageBox.Show("Welcome user!");
+
             Reset();
 
         }
 
         private void cbxMovie_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+            ConnectDatabase();
             //load movie description from database
             GrabDataRtbx(@"SELECT Description FROM Movies WHERE Movie_Name = " + cbxMovie.SelectedItem, rtbxMovie); //NB: no such column yet
             //load restriction
@@ -146,6 +155,7 @@ namespace MovieBookingProgram
             cbxGenre.SelectedIndex = 0;
             //allow booking
             btnBook.Enabled = true;
+            conn.Close();
         }
 
         private void cbxGenre_SelectedIndexChanged(object sender, EventArgs e)
@@ -157,17 +167,16 @@ namespace MovieBookingProgram
         private void cbxSpecial_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            //check first method
-            //GrabDataCbx(@"SELECT Movie_Name FROM Movies WHERE Genre_Id = " + cbxSpecial.SelectedItem, cbxMovie);
+            ConnectDatabase();
+            GrabDataCbx(@"SELECT Movie_Name FROM Movies WHERE  Genre_Id= " + cbxSpecial.SelectedItem, cbxMovie);
             GrabDataRtbx(@"SELECT Description FROM Specials", rtbxSpecial);
             GrabDataLbl(@"SELECT Price FROM Specials WHERE Special_Id = " + cbxSpecial.SelectedItem, lblSpecialPrice);
-
+            conn.Close();
         }
 
         private void btnBook_Click(object sender, EventArgs e)
         {
-            //discuss how to "check" username, and generate new ones
-
+            ConnectDatabase();
             DialogResult result = MessageBox.Show("Do you want to check out?", "Confirmation", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
@@ -178,32 +187,82 @@ namespace MovieBookingProgram
 
                 //discuss how to generate the following:
 
-                //Booking_Id
-                string Booking_Id;
-                //Client_Id - see username comment ^
-
+                //Booking_Id - autonumber
+                int Booking_Id = Int16.Parse(GrabData("SELECT MAX(Booking_Id) FROM Bookings")) + 1;
+                //Client_Id - autonumber
+                int Client_Id = Int16.Parse(GrabData("SELECT MAX(Client_Id) FROM Clients")) + 1;
                 //Special_Id
                 string Special_Id = cbxSpecial.SelectedItem.ToString();
-                //Booking_For
-                string Booking_For = monthCalendar2.SelectionStart.ToString() + cbxTime.SelectedItem.ToString();
                 //Movie_Id
                 string Movie_Id = GrabData(@"SELECT Movie_Id FROM Movies WHERE Movie_Name = " + cbxMovie.SelectedItem);
-                //Seat_Code - how should we keep track of available seats
-
+                //Booking_For
+                string Booking_For = GrabData("SELECT ??? FROM Show_Times WHERE Movie_Id =" + Movie_Id);
+                //Seat_Code - how should we keep track of available seats?
+                int Seat_Code = Int16.Parse(numSeats.Value.ToString());
 
                 //write to rich text - format?
 
+                rtbxOut.AppendText("Hello! " + GrabData("SELECT First_Name FROM Clients WHERE Client_Id = " + user));
+                rtbxOut.AppendText("Booking number: " + Booking_Id);
+                rtbxOut.AppendText("Movie: " + cbxMovie.SelectedItem);
+                rtbxOut.AppendText("Time: " + Booking_For);
+                rtbxOut.AppendText("Seats: " + Seat_Code);
+                rtbxOut.AppendText("Price: ???");//discuss prices
+
 
                 //Payment
-                    //Dont have required hardware to present over zoom meeting, rtf would be printed on "slips" to give to the customer?
-                    //Future expansion - sms "slips" to customer?
-                    //discuss what we should do with the slips futjer
+                //Dont have required hardware to present over zoom meeting, rtf would be printed on "slips" to give to the customer?
+                //Future expansion - sms "slips" to customer
 
-                //write to database
-                    
-                
+                //write to database - formatting?
+                //ConnectDatabase();
+                //string sql = "INSERT INTO DBTheater.Bookings (Booking_Id,Client_Id,Special_Id, Booking_For, Movie_Id, Seat_Code,Payment) values()";
+                //cmd = new SqlCommand(sql, conn);
+                //adap.InsertCommand = new SqlCommand(sql, conn);
+                //adap.InsertCommand.ExecuteNonQuery();
+
+                conn.Close();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //check existance
+            ConnectDatabase();
+            cmd = new SqlCommand("SELECT First_Name, Last_Name FROM Clients", conn);
+            SqlDataReader dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
+            {
+                string query = dataReader.GetString(1);
+                if (query == txtFirstName.Text)
+                {
+                    string query2 = dataReader.GetString(2);
+                    if (query == txtLastName.Text)
+                    {
+                        DialogResult result = MessageBox.Show("Username already exists. Continue?", "Warning!", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
+                        {
+                            user = Int16.Parse(GrabData("SELECT Client_Id FROM Clients WHERE First_name =" + query + "&& Last_name = " + query2));
+                            MessageBox.Show("Welcome, " + GrabData("SELECT First_Name FROM Clients WHERE Client_Id =" + user));
+                            txtFirstName.Enabled = false;
+                            txtLastName.Enabled = false;
+                            btnCheck.Enabled = false;
+                        }
+                    }
+                    else
+                    {
+                        user = Int16.Parse(GrabData("SELECT MAX(Client_Id) FROM Clients")) + 1;
+                        adap.InsertCommand = new SqlCommand("INSERT INTO DBTheater.Clients(Client_Id,First_name,Last_name) values (" + GrabData("SELECT MAX(Client_Id) FROM Clients" + 1) + "," + txtFirstName.Text + "," + txtLastName.Text);
+                        MessageBox.Show("Username Added!");
+                        txtFirstName.Enabled = false;
+                        txtLastName.Enabled = false;
+                        btnCheck.Enabled = false;
+                    }
+
+                }
 
             }
+            conn.Close();
         }
     }
 }

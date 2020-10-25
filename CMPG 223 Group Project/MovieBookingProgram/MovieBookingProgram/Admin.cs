@@ -156,5 +156,15 @@ namespace MovieBookingProgram
 
             conn.Close();
         }
+
+        private void BtnAddMovie_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnEditBooking_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
